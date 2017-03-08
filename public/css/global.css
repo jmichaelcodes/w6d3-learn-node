@@ -1,0 +1,14 @@
+* {
+    box-sizing: border-box;
+}
+
+img {
+    width: 100%;
+}
+
+.jumbotron {
+    background: #6fe63a;
+}
+.items {
+    background: #6fe63a;
+}
