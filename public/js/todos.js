@@ -3,6 +3,13 @@ var todoItem = document.querySelector('#todoItem')
 var todoButton = document.querySelector('#todoButton')
 var categories = document.querySelector('#categories')
 var dueDate = document.querySelector('#dueDate')
+var datePickerUI;
+
+
+
+document.querySelector('body').addEventListener('click', function(e) {
+    // console.log(e.target)
+})
 
 
 getTodos()
@@ -11,10 +18,42 @@ todoItem.addEventListener('keypress', handleKeyPressOnTodoItem)
 
 todoButton.addEventListener('click', addTodo)
 
+
+datePickerUI = new Pikaday(
+    {
+        field: document.querySelector('#dueDate'),
+        firstDay: 1,
+        minDate: new Date(2000, 0, 1),
+        maxDate: new Date(2020, 12, 31),
+        yearRange: [2000,2020],
+        onSelect: function() {
+        }
+    });    
+
+    todosContainer.addEventListener('click', handleClickOnCheckbox)
+
 function handleKeyPressOnTodoItem(e) {
     if (e.key === 'Enter') {
         addTodo()
     }
+}
+
+function handleClickOnCheckbox(e) {
+    if (e.target.type === 'checkbox') {
+        toggleTodoComplete(e.target.getAttribute('data-id'), e.target.checked)
+    }
+}
+
+function toggleTodoComplete(todoId, isComplete) {
+
+    if (isComplete) {
+        fetch('/api/v1/todos/' + todoId + '/complete')
+        .then(getTodos)
+    } else {
+        fetch('/api/v1/todos/' + todoId + '/incomplete')
+        .then(getTodos)
+    }
+
 }
 
 function addTodo() {
@@ -48,30 +87,74 @@ function addTodo() {
     })
     .then(response => response.json())
     .then(showTodo)
-}
 
     document.querySelector('#todoItem').value = ''
     document.querySelector('#dueDate').value = ''
     document.querySelector('#categories').value = 'none'
+    }
 }
 
 function getTodos() {
     fetch('http://localhost:3000/api/v1/todos')
     .then(response => response.json())
+    // .then(response => console.log(response))
     .then(loopTodos)
 }
 
 function loopTodos(todos) {
+    console.log(todos)
     todosContainer.innerHTML = ''
     todos.forEach(showTodo)
 }
 
 function showTodo(todo) {
+    var labelColor
+    var isOlder
+    var now = moment().format('MM/DD/YYYY')
+
+     if (moment(todo.due_date).format('MM/DD/YYYY') > now) {
+         isOlder = false
+     } else {
+         isOlder = true
+     }
+
+
+    switch(todo.category) {
+        case 'Back-Burner':
+            labelColor = 'label-info'
+            break
+        case 'Class':
+            labelColor = 'label-success'
+            break
+        case 'Homework':
+            labelColor = 'label-warning'
+            break
+        case 'Personal':
+            labelColor = 'label-primary'
+            break
+        case 'Urgent':
+            labelColor = 'label-danger'
+            break
+        default:
+            labelColor = 'label-default'
+    }
+
+    
+
+
     var todoTemplate = `<li class="list-group-item">
-                        <input type="checkbox" id="cbox1" value="first_checkbox"></input>
-                        ${todo.todo}
-                        <span class="badge badge-pill badge-primary" id="categoryBadge">${todo.category}</span>
-                        <span class="badge badge-pill badge-success" id="dateBadge">${todo.due_date}    </span>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="checkbox" data-id="${todo.id}" ${todo.completed === 'yes' ? 'checked' : ''}><span class="${todo.completed === 'yes' ? 'done' : ''}">${todo.todo}</span></input>
+                            </div>
+                            <div class="col-sm-6" style="text-align: right" data-id="${todo.id}">
+                                <span class="label ${labelColor}">${todo.category}</span>
+                                <span class="label ${isOlder ? 'label-danger' : 'label-success'}">${moment(todo.due_date).format('MM/DD/YYYY')}    </span>
+                            </div>
+                        </a>
                     </li>`
-    todosContainer.innerHTML = todoTemplate + todosContainer.innerHTML
+
+
+
+    todosContainer.innerHTML = todoTemplate + todosContainer.innerHTML;
 }

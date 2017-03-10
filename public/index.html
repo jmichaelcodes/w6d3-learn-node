@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6,fetch,Array.prototype.includes"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/pikaday.css" />
     <link rel="stylesheet" href="css/global.css" />
 </head>
 
@@ -31,19 +32,22 @@
                     <label for="categories">Categories:</label><br/>
                     <select id="categories" name="categories">
                         <option value="none">Pick a category</option>
-                        <option value="backburner">Back-Burner</option>
-                        <option value="class">Class</option>
-                        <option value="homework">Homework</option>
-                        <option value="personal">Personal</option>
-                        <option value="urgent">Urgent</option>
+                        <option value="Back-Burner">Back-Burner</option>
+                        <option value="Class">Class</option>
+                        <option value="Homework">Homework</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Urgent">Urgent</option>
                     </select><br/><br/>
 
                 </div>
 
-                <div><strong>Due Date:</strong></div>
-                    <input type="datetime-local" name="dueDate" id="dueDate">
+                <label for="datepicker">Due Date:</label>
+                <br/>
+                <input type="text" id="dueDate">
                 <br/>
                 <br/>
+
+
 
                 <div class="input-group input-group-lg">
                     <input type="text" class="form-control" id="todoItem" placeholder="What is there to do? ...">
@@ -61,7 +65,8 @@
         </div>
     </div>
 
-
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script src="js/pikaday.js"></script>
     <script src="js/todos.js"></script>
 </body>
 

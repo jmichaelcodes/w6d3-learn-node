@@ -12,3 +12,7 @@ img {
 .items {
     background: #6fe63a;
 }
+
+.done {
+    text-decoration: line-through;
+}

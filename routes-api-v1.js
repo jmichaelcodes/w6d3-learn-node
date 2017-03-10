@@ -9,7 +9,7 @@ module.exports.setup = (router, uploads, knex) => {
     // Get all todos
     router.get('/todos', function(request, response) {
 
-        knex.select().table('todos').then(function(data) {
+        knex.select('*').table('todos').orderBy('category', 'desc').then(function(data) {
             response.json(data)
         })
 
@@ -34,6 +34,26 @@ module.exports.setup = (router, uploads, knex) => {
             response.json(data[0])
         })
 
+    })
+
+    router.get('/todos/:todoId/complete', function(req, res) {
+        let update = {
+            completed: 'yes'
+        }
+
+        knex.update(update).table('todos').where('id', '=', req.params.todoId).then(function(data) {
+            res.json(true)
+        })
+    })
+
+    router.get('/todos/:todoId/incomplete', function(req, res) {
+        let update = {
+            completed: 'no'
+        }
+
+        knex.update(update).table('todos').where('id', '=', req.params.todoId).then(function(data) {
+            res.json(true)
+        })
     })
 
     // Return the router, with new routes attached back to the Express web server that's loading these
